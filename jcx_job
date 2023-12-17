@@ -1,0 +1,30 @@
+#!/bin/bash
+#
+#jcx_job
+# 2023 by MentorData Henryk Poplawski
+#
+
+# job_info.log - contains information about job activity
+# job_status.txt - current state of job
+# job_output.log - job process output stdout and stderr
+
+
+job_id=$$
+job_line=${1}
+
+mkdir -p $job_id
+cd $job_id
+
+echo "job [$job_id] started [$(date +%F-%T)] line [$job_line]"|tee job_info.log
+echo "job [$job_id] started [$(date +%F-%T)] status [STARTED]">job_status.txt
+
+bash -c "$job_line" 2>&1 > job_output.log
+
+job_status=$?
+
+echo "job [$job_id] finished [$(date +%F-%T)] status [$job_status]"|tee -a job_info.log
+echo "job [$job_id] finished [$(date +%F-%T)] status [$job_status]">job_status.txt
+
+
+
+

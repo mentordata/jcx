@@ -1,0 +1,42 @@
+#!/bin/bash
+#
+# jcx_work 
+# 2023 MentorData Henryk Poplawski
+#
+
+if [ -z "$JCX_HOME" ]
+    then
+    export JCX_HOME=$(pwd)
+
+
+    fi
+
+work_name=${1}
+work_cmd=${2}
+work_id=${work_name}.$BASHPID
+
+
+work_dir=$JCX_HOME/work/$work_id
+
+mkdir -p $work_dir
+cd $work_dir
+cat /dev/stdin > work_input.txt
+
+work_jobs=$(wc -l work_input.txt|cut -d " " -f1|xargs)
+
+echo "work_id:$work_id" |tee work_info.log
+echo "work_cmd:$work_cmd"|tee -a work_info.log
+
+echo "work_id [$work_id] starting [$(date +%F-%T)] name [$work_name] jobs [$work_jobs]" >> work_info.log
+echo "work_id [$work_id] starting [$(date +%F-%T)] name [$work_name] status [STARTING]" >work_status.txt
+
+while read job_line; do
+    echo "job_line:$job_line"
+    job_cmd="$JCX_HOME/jcx_job \"$work_cmd $job_line\""
+    nohup bash -c "$job_cmd" & 2>&1|tee -a work_info.log 
+done < work_input.txt
+
+echo "work_id [$work_id] started [$(date +%F-%T)] name [$work_name] jobs [$work_jobs]" >> work_info.log
+echo "work_id [$work_id] started [$(date +%F-%T)] name [$work_name] status [STARTED]" >work_status.txt
+
+

@@ -1,0 +1,5 @@
+echo start1 && date && sleep 30 && date && echo koniec
+echo start2 && date && sleep 30 && date && echo koniec
+echo start3 && date && sleep 30 && date && echo koniec
+echo start4 && date && sleep 30 && date && echo koniec
+echo start5 && date && sleep 30 && date && echo koniec
